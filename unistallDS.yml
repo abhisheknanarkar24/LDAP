@@ -1,0 +1,27 @@
+#####################################################################################
+# Date            Version            Change
+# 01/03/2019      1.0                created (previous)
+# 11/04/2019      2.0                backlog fixes and new features (current)
+#####################################################################################
+---
+
+
+- hosts: "{{ hosts }}"
+  vars: 
+    repo_name: "{{ lookup('ini', 'REPO_NAME section=RPM file={{ configFile }}') }}"
+  tasks:
+  - name: remove 389 Directory Server instances on CentOS
+    shell: /usr/sbin/remove-ds-admin.pl -y -f
+ 
+#  - name: Remove 389 Directory Server packages
+#    shell: yum remove 389-ds-base-libs 389-adminutil idm-console-framework -y
+
+#  - name: Remove repository (and clean up left-over metadata)
+#    yum_repository:
+#      name: "{{ repo_name }}"
+#      file: external_repos
+#      state: absent
+   
+#  - name: clean state
+#    shell: rm -rf /etc/dirsrv /usr/lib*/dirsrv /var/*/dirsrv /etc/sysconfig/dirsrv*
+    

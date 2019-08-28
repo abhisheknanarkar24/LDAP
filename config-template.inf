@@ -1,0 +1,49 @@
+[General]
+AdminDomain = <DOMAIN_NAME>
+ConfigDirectoryAdminID = <CONF_DIR_ADMIN_ID>
+ConfigDirectoryAdminPwd =<CONF_DIR_ADMIN_PW>
+ConfigDirectoryLdapURL = ldap://<HOSTNAME>.<DOMAIN_NAME>:<SERVER_PORT>/o=NetscapeRoot
+FullMachineName = <HOSTNAME>.<DOMAIN_NAME>
+ServerRoot = /usr/lib64/dirsrv
+StrictHostCheck = true
+SuiteSpotGroup = <USERNAME>
+SuiteSpotUserID = <USERNAME>
+
+[admin]
+Port = <ADMIN_PORT>
+ServerAdminID = <SERVER_ADMIN_ID>
+ServerAdminPwd =<SERVER_ADMIN_PW>
+ServerIpAddress = 0.0.0.0
+SysUser = <USERNAME>
+
+[slapd]
+AddOrgEntries = Yes
+AddSampleEntries = No
+#HashedRootDNPwd = {SSHA512}/RquujiNh1xTzIAWve0lTSx6RCZZZHbK2xNC479CEXkc7CuXCEHYDoLVU+8j7BGYM/5T0Sts+F/K3dyFFO/DPSdPMzXot3qh
+InstScriptsEnabled = true
+InstallLdifFile = suggest
+RootDN = cn=Directory Manager
+RootDNPwd = <ROOT_DN_PW>
+ServerIdentifier = <HOSTNAME>
+ServerPort = <SERVER_PORT>
+SlapdConfigForMC = yes
+Suffix = dc=<HOSTNAME>,dc=<DOMAIN_NAME>
+UseExistingMC = 0
+bak_dir = /var/lib/dirsrv/slapd-<HOSTNAME>/bak
+bindir = /usr/bin
+cert_dir = /etc/dirsrv/slapd-<HOSTNAME>
+config_dir = /etc/dirsrv/slapd-<HOSTNAME>
+datadir = /usr/share
+db_dir = /var/lib/dirsrv/slapd-<HOSTNAME>/db
+ds_bename = userRoot
+inst_dir = /usr/lib64/dirsrv/slapd-<HOSTNAME>
+ldif_dir = /var/lib/dirsrv/slapd-<HOSTNAME>/ldif
+localstatedir = /var
+lock_dir = /var/lock/dirsrv/slapd-<HOSTNAME>
+log_dir = /var/log/dirsrv/slapd-<HOSTNAME>
+naming_value = <HOSTNAME>
+run_dir = /var/run/dirsrv
+sbindir = /usr/sbin
+schema_dir = /etc/dirsrv/slapd-<HOSTNAME>/schema
+sysconfdir = /etc
+tmp_dir = /tmp

@@ -1,0 +1,40 @@
+#####################################################################################
+# Date            Version            Change
+# 01/03/2019      1.0                created (previous)
+# 11/04/2019      2.0                backlog fixes and new features (current)
+#####################################################################################
+---
+
+- hosts: "{{ hosts }}" 
+  become: true
+  tasks:
+  - name: Change SELINUX to disabled 
+    lineinfile:
+      path: /etc/sysconfig/selinux
+      regexp: '^SELINUX='
+      line: 'SELINUX=disabled'
+
+  - name: Perform basic performance and Security tuning for LDAP server
+    blockinfile:
+      path: /etc/sysctl.conf 
+      block: |
+        net.ipv4.tcp_keepalive_time = 300
+        net.ipv4.ip_local_port_range = 1024 65000
+        fs.file-max = 64000
+      
+  - name: Security tuning for LDAP server
+    blockinfile:
+      path: /etc/security/limits.conf
+      block: |
+        * soft nofile 524288
+        * hard nofile 524288
+
+  - name: edit profile details
+    lineinfile:
+      path: /etc/profile
+      line: ulimit -n 8192
+
+  - name: edit profile details
+    lineinfile:
+      path: /etc/pam.d/login
+      line: session    required     /lib/security/pam_limits.so

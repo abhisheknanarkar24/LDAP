@@ -1,0 +1,19 @@
+#####################################################################################
+# Date            Version            Change
+# 01/03/2019      1.0                created (previous)
+# 11/04/2019      2.0                backlog fixes and new features (current)
+#####################################################################################
+---
+
+- import_playbook: "{{ lookup('ini', 'COMMON_SCRIPTS section=ANSIBLE file={{ configFile }}') }}/copyFiles.yml"
+  vars:
+    src_dir: "{{ lookup('ini', 'SOFTWARE_SOURCE section=Common_Settings file={{ configFile }}') }}/LDAP/{{ lookup('ini', 'CONSOLE_MSI section=LDA file={{ configFile }}')}}"
+    dest_dir: "{{ lookup('ini', 'CONNECT_SOFTWARE section=Common_Settings file={{ configFile }}') }}\\"
+
+- hosts: "{{ hosts }}"
+  vars:
+    msi_dir: "{{ lookup('ini', 'CONNECT_SOFTWARE section=Common_Settings file={{ configFile }}') }}\\{{ lookup('ini', 'CONSOLE_MSI section=LDA file={{ configFile }}')}}"
+    install_dir: "{{ lookup('ini', 'PROGRAM_FILES_DIR section=Common_Settings file={{ configFile }}') }}\\389 Management Console"
+  tasks: 
+  - name: Install 389-Management Console
+    win_command: "msiexec /i {{ msi_dir }} /qn INSTALLDIR=\"{{ install_dir }}\""

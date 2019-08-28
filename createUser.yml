@@ -1,0 +1,34 @@
+#####################################################################################
+# Date            Version            Change
+# 01/03/2019      1.0                created (previous)
+# 11/04/2019      2.0                backlog fixes and new features (current)
+#####################################################################################
+---
+
+- hosts: "{{ hosts }}"
+  become: true
+  vars:
+    username: "{{ lookup('ini', 'USERNAME section=USER_ACCOUNT file={{ configFile }}') }}"
+    password: "{{ lookup('ini', 'PASSWORD section=USER_ACCOUNT file={{ configFile }}') }}"
+
+  tasks:
+  - include_vars:
+      file: "/etc/ansible/group_vars_{{ deployment_environment }}/ldap.yml"
+      name: ldap
+    no_log: true
+
+  - name: generate password
+    shell: python -c 'import crypt; print crypt.crypt("{{ ldap.password }}", "$1$SomeSalt$")' 
+    register: gen_password
+
+  - name: store password in encrypted format
+    set_fact: 
+      pass_key: "{{ gen_password.stdout | regex_replace('\"', ' ') }}"  
+   
+  - name: create username and set password
+    user:
+      name: "{{ ldap.username }}"
+      password: "{{ pass_key }}"
+      shell: /bin/bash
+      groups: root
+      append: yes

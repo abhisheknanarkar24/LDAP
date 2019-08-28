@@ -1,0 +1,63 @@
+###########################################################################################
+# Date            Version            Change
+# 03/06/2019      2.0.2              added conditions to different plays
+# 03/07/2019      2.0.3              added user creation for internal environment (current)
+###########################################################################################
+---
+
+- import_playbook: createUser.yml
+  vars:
+    hosts: "LDA"
+    deployment_level: "{{ lookup('ini', 'DEPLOYMENT_LEVEL section=Release file={{ configFile }}') }}"
+  when: deployment_level == 'Internal'
+
+- import_playbook: setupFirewall.yml
+  vars:
+    hosts: "LDA"
+    deployment_level: "{{ lookup('ini', 'DEPLOYMENT_LEVEL section=Release file={{ configFile }}') }}"
+  when: deployment_level == 'Internal'
+
+- import_playbook: configureServer.yml
+  vars:
+    hosts: "LDA"
+    deployment_level: "{{ lookup('ini', 'DEPLOYMENT_LEVEL section=Release file={{ configFile }}') }}"
+  when: deployment_level == 'Internal'
+
+- import_playbook: createLocalRepo.yml
+  vars:
+    hosts: "LDA"
+    deployment_level: "{{ lookup('ini', 'DEPLOYMENT_LEVEL section=Release file={{ configFile }}') }}"
+  when: deployment_level == 'Internal'
+    
+- import_playbook: installDSpackages.yml
+  vars:
+    hosts: "LDA"
+    deployment_level: "{{ lookup('ini', 'DEPLOYMENT_LEVEL section=Release file={{ configFile }}') }}"
+  when: deployment_level == 'Internal'
+
+- import_playbook: startStopDirSrvTarget.yml
+  vars:
+    hosts: "LDA"
+    state: start
+
+- import_playbook: regexToConfig.yml
+  vars:
+    hosts: "LDA"
+
+- import_playbook: verifyLdap.yml
+  vars:
+    hosts: "LDA"
+
+- import_playbook: runSetupDSAdmin.yml
+  vars:
+    hosts: "LDA"
+  when: output.stat.exists == False
+
+- import_playbook: startStopDirSrvAdmin.yml
+  vars:
+    hosts: "LDA"
+    state: start
+
+- import_playbook: installLDAPConsole.yml
+  vars:
+    hosts: "CUS"

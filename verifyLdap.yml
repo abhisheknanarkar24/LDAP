@@ -1,0 +1,29 @@
+#####################################################################################
+# Date            Version            Change
+# 11/04/2019      2.0                backlog fixes and new features
+# 13/06/2019      2.0.2              change for slapd instance name (current)
+#####################################################################################
+---
+
+- hosts: "{{ hosts }}"
+  vars:
+    ldap_instance_dir: "{{ lookup('ini','INSTANCE_DIR section=LDA file={{ configFile }}') }}"
+  tasks:
+    - name: Get hostname of the server
+      shell: hostname
+      register: hostname
+
+    - name: Checks whether LDAP instance already exists on {{ hostname.stdout | upper }}
+      stat:
+        path: "{{ ldap_instance_dir }}/slapd-{{ hostname.stdout.split('.')[0] | upper if (hostname.stdout.split('.')[0] | int(-1)== -1) else hostname.stdout | upper }}"
+      register: output
+
+    - name: 389-DS instance is installed
+      debug:
+        msg: "389-DS instance is installed on the server "
+      when: output.stat.exists
+
+    - name: 389-DS instance Not installed
+      debug:
+        msg: "389-DS instance is not installed on the server "
+      when: not output.stat.exists

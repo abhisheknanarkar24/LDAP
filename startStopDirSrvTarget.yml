@@ -1,0 +1,12 @@
+#####################################################################################
+# Date            Version            Change
+# 01/03/2019      1.0                created (previous)
+# 11/04/2019      2.0                backlog fixes and new features (current)
+#####################################################################################
+---
+
+- hosts: "{{ hosts }}"
+  become: "{{ lookup('ini', 'ANSIBLE_BECOME section=ANSIBLE file={{ configFile }}') }}"
+  tasks: 
+  - name: " {{ state }} the 389-Directory Services"
+    shell: "sudo systemctl {{ state }} dirsrv.target"

@@ -1,0 +1,23 @@
+#####################################################################################
+# Date            Version            Change
+# 01/03/2019      1.0                created (previous)
+# 11/04/2019      2.0                backlog fixes and new features (current)
+#####################################################################################
+---
+
+- hosts: "{{ hosts }}"
+  become: true
+  tasks:
+  - name: Install the Directory Server packages
+    yum:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - 389-ds-base
+      - 389-adminutil
+      - idm-console-framework
+      - 389-admin
+      - 389-ds-console
+      - 389-console
+      - 389-admin-console
+

@@ -1,0 +1,29 @@
+#####################################################################################
+# Date            Version            Change
+# 01/03/2019      1.0                created (previous)
+# 11/04/2019      2.0                backlog fixes and new features (current)
+#####################################################################################
+---
+
+
+- hosts: "{{ hosts }}"
+  become: true
+  vars:
+    server_port: "{{ lookup('ini', 'SERVER_PORT section=LDA file={{ configFile }}') }}"
+    admin_port: "{{ lookup('ini', 'ADMIN_PORT section=LDA file={{ configFile }}') }}"
+  tasks:
+  - name: Start firewalld
+    service: 
+      name: firewalld 
+      state: started
+
+  - name: Opening the Required Ports in the Firewall
+    shell: firewall-cmd --permanent --add-port={{ item }}/tcp
+    with_items:
+      - "{{ server_port }}"
+      - "{{ admin_port }}"
+
+  - name: Restart firewalld
+    service:
+      name: firewalld
+      state: restarted

@@ -1,0 +1,56 @@
+#####################################################################################
+# Date            Version            Change
+# 11/04/2019      2.0                backlog fixes and new features
+# 13/06/2019      2.0.2              change for slapd instance name (current)
+#####################################################################################
+---
+
+- hosts: "{{ hosts }}"
+  vars:
+    admin_port: "{{ lookup('ini', 'ADMIN_PORT section=LDA file={{ configFile }}') }}"
+    server_port: "{{ lookup('ini', 'SERVER_PORT section=LDA file={{ configFile }}') }}"
+    file_path: "{{ lookup('ini', 'ASSETS_DIR section=LDA file={{ configFile }}') }}"
+    config_template: "{{ lookup('ini', 'CONFIG_TEMPLATE section=LDA file={{ configFile }}') }}"
+    config_src: "{{ lookup('ini', 'COMMON_SCRIPTS section=ANSIBLE file={{ configFile }}') }}/config"
+  tasks:
+  - include_vars:
+      file: "/etc/ansible/group_vars_{{ deployment_environment }}/{{ item }}.yml"
+      name: "{{ item }}"
+    with_items:
+      - ldap
+    no_log: true
+
+  - name: Create directory if doesn't exist
+    file:
+      path: "{{ file_path }}/"
+      state: directory
+      mode: 0755
+      owner: "{{ ansible_ssh_user }}"
+      group: "{{ ansible_ssh_user }}"
+
+  - name: Fetch config-template.inf file 
+    copy:
+      src: "{{ config_src }}/{{ config_template }}"
+      dest: "{{ file_path }}"
+
+  - name: Get hostname of the server
+    shell: hostname
+    register: hostname
+
+  - name: Replace placeholder in config-template file
+    replace:
+      path: "{{ file_path }}/{{ config_template }}"
+      regexp: "{{ item.regexp }}"
+      replace: "{{ item.replace }}"
+    with_items:
+      - { regexp: "<DOMAIN_NAME>", replace: "{{ ldap.domain }}" }
+      - { regexp: "<HOSTNAME>", replace: "{{ hostname.stdout.split('.')[0] | upper if (hostname.stdout.split('.')[0] | int(-1)== -1) else hostname.stdout | upper }}" }
+      - { regexp: "<USERNAME>", replace: "{{ ldap.username }}" }
+      - { regexp: "<CONF_DIR_ADMIN_ID>", replace: "{{ ldap.admin_id }}" }
+      - { regexp: "<CONF_DIR_ADMIN_PW>", replace: "{{ ldap.admin_password }}" }
+      - { regexp: "<ADMIN_PORT>", replace: "{{ admin_port }}" }
+      - { regexp: "<SERVER_ADMIN_ID>", replace: "{{ ldap.admin_id }}" }
+      - { regexp: "<SERVER_ADMIN_PW>", replace: "{{ ldap.admin_password }}" }
+      - { regexp: "<ROOT_DN_PW>", replace: "{{ ldap.root_dn_password }}" }
+      - { regexp: "<SERVER_PORT>", replace: "{{ server_port }}" }
+

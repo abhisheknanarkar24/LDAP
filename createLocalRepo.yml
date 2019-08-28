@@ -1,0 +1,41 @@
+#####################################################################################
+# Date            Version            Change
+# 01/03/2019      1.0                created (previous)
+# 11/04/2019      2.0                backlog fixes and new features (current)
+#####################################################################################
+---
+
+- hosts: "{{ hosts }}"
+  become: true
+  vars:
+    software_dir: "{{ lookup('ini', 'SOFTWARE_SOURCE section=Common_Settings file={{ configFile }}') }}"
+    ldap_repo: "{{ software_dir }}/LDAP/ldaprepo.zip"
+    repo_dir: "{{ lookup('ini', 'REPO_DIR section=LDA file={{ configFile }}') }}"
+    repo_name: "{{ lookup('ini', 'REPO_NAME section=LDA file={{ configFile }}') }}"
+    description: "{{ lookup('ini', 'DESCRIPTION section=LDA file={{ configFile }}') }}"
+
+  tasks:
+  - name: Create directory if doesn't exist
+    file:
+      path: "{{ repo_dir }}"
+      state: directory
+      mode: 0755
+      owner: "{{ ansible_ssh_user }}"
+      group: "{{ ansible_ssh_user }}"
+
+  - name: Copy RPM packages
+    unarchive:
+      src: "{{ ldap_repo }}"
+      dest: "{{ repo_dir }}"
+
+  - name: Define a repository
+    shell: 'createrepo "{{ repo_dir }}"'
+
+  - name: Create a repository
+    yum_repository:
+      name: "{{ repo_name }}"
+      description: "{{ description }}"
+      baseurl: file://{{ repo_dir }}
+      gpgcheck: no
+      enabled: 1
+      state: present

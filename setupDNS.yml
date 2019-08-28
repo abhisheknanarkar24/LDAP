@@ -1,0 +1,21 @@
+#####################################################################################
+# Date            Version            Change
+# 11/04/2019      2.0                backlog fixes and new features
+# 13/06/2019      2.0.2              added no_log (current)
+#####################################################################################
+---
+
+- hosts: "{{ hosts }}"
+  become: true
+  vars:
+    hostname: "{{ lookup('inventory_hostnames', 'LDA') }}"
+  tasks:
+  - include_vars:
+      file: "/etc/ansible/group_vars_{{ deployment_environment }}/ldap.yml"
+      name: ldap
+    no_log: true
+
+  - name: Fully Qualified Domain Name Resolution
+    lineinfile:
+      path: /etc/hosts
+      line: "{{ inventory_hostname }} {{ hostname }}.{{ ldap.domain }} {{ hostname }}"
