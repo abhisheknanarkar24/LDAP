@@ -24,7 +24,7 @@ Configuration:
 
  1. Apply regex on config-template to configure ldap as per requirement
  
- 2.COnfigure start and stop directory server
+ 2. COnfigure start and stop directory server
  
  
  
