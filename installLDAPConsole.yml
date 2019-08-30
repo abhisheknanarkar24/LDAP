@@ -1,11 +1,6 @@
-#####################################################################################
-# Date            Version            Change
-# 01/03/2019      1.0                created (previous)
-# 11/04/2019      2.0                backlog fixes and new features (current)
-#####################################################################################
 ---
 
-- import_playbook: "{{ lookup('ini', 'COMMON_SCRIPTS section=ANSIBLE file={{ configFile }}') }}/copyFiles.yml"
+- import_playbook: "copyFiles.yml"
   vars:
     src_dir: "{{ lookup('ini', 'SOFTWARE_SOURCE section=Common_Settings file={{ configFile }}') }}/LDAP/{{ lookup('ini', 'CONSOLE_MSI section=LDA file={{ configFile }}')}}"
     dest_dir: "{{ lookup('ini', 'CONNECT_SOFTWARE section=Common_Settings file={{ configFile }}') }}\\"
