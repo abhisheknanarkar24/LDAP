@@ -11,6 +11,10 @@ Prerequisites:
  3. sudoers file shoud be modified if need to run ldap without sudo access.
 
  4. create local repository using createrepo and install 389 directory server with all dependency
+ 
+ 5. configure ansible-valut for storing ldap password
+ 
+ 6. configure inventory host file to set ldap target machine
 
 
 Installation:
