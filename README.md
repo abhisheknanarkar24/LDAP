@@ -26,6 +26,13 @@ Configuration:
  
  2. COnfigure start and stop directory server
  
+Command:
+
+ ansible-playbook install389.yml -e "configFile=config.ini hosts=LDA" -i /etc/ansible/inventory
+ 
+ 
+- /etc/ansible/inventory : this file contains Target machine with ip or hostname configure for ldap instalation it must be configure        inventory file with hostname
+ 
  
  
  
