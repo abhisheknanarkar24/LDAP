@@ -1,8 +1,3 @@
-###########################################################################################
-# Date            Version            Change
-# 03/06/2019      2.0.2              added conditions to different plays
-# 03/07/2019      2.0.3              added user creation for internal environment (current)
-###########################################################################################
 ---
 
 - import_playbook: createUser.yml
@@ -60,4 +55,4 @@
 
 - import_playbook: installLDAPConsole.yml
   vars:
-    hosts: "CUS"
+    hosts: "WINDOWS_BOX"
